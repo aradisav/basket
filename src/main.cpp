@@ -10,13 +10,11 @@
 #include <cmath>
 #include <fstream>
 #include <vector>
-#include <random>       // std::default_random_engine
+#include <random>
 
 using namespace std;
 
-
 #define PRICE_PER_GAME 3500;
-
 
 struct player {
     string name;
@@ -37,6 +35,7 @@ int main(int argc, char **argv) {
     //Load players
     ifstream file;
     file.open("etc/players", ios::in);
+    if (!file.is_open()) return 3;
 
     vector<player> players;
     player line;
@@ -74,7 +73,7 @@ int main(int argc, char **argv) {
     cout << "free_slots: " << free_slots << endl;
 
     // obtain a time-based seed:
-    long long int seed = std::chrono::system_clock::now().time_since_epoch().count();
+    long long int seed = chrono::system_clock::now().time_since_epoch().count();
 
     shuffle(players.begin(), players.end(), std::default_random_engine((unsigned int) seed));
 
