@@ -11,24 +11,16 @@
 #include <fstream>
 #include <vector>
 #include <random>
+#include "PlayerBase.h"
 
 using namespace std;
 
 #define PRICE_PER_GAME 3500;
 
-struct player {
-    string name;
-    int n_games;
-
-    player() {
-        n_games = 0;
-    }
-};
-
 int main(int argc, char **argv) {
 
     if (argc != 3) {
-        cout << "Usage: raspored broj_termina max_po_terminu " << endl;
+        cout << "Usage: basket max_players_per_game " << endl;
         return 1;
     }
 
@@ -37,15 +29,14 @@ int main(int argc, char **argv) {
     file.open("etc/players", ios::in);
     if (!file.is_open()) return 3;
 
-    vector<player> players;
-    player line;
+    vector<Player> players;
+    string line;
 
-    while (std::getline(file, line.name)) {
-        if (line.name.empty())
+    while (std::getline(file, line)) {
+        if (line.empty())
             continue;
         else {
-            line.n_games = 0;
-            players.push_back(line);
+            players.push_back(Player(line));
         }
 
     }
@@ -82,13 +73,15 @@ int main(int argc, char **argv) {
 
         if (i % max_players_per_game == 0)
             cout << endl << "WEEK: " << ++w << endl;
-        cout << players[i % players.size()].name << "\t" << endl;
-        players[i % players.size()].n_games++;
+        cout << players[i % players.size()].getName() << "\t" << endl;
+        auto &player = players[i % players.size()];
+        player.setN_games(player.getN_games() + 1);
     }
 
     cout << endl << "totals" << endl;
     for (auto const &p: players) {
-        cout << p.name << "\t" << p.n_games << " price: " << p.n_games * (total_price_per_month / num_of_slots) << endl;
+        cout << p.getName() << "\t" << p.getN_games() << " price: " <<
+        p.getN_games() * (total_price_per_month / num_of_slots) << endl;
     }
 
 
